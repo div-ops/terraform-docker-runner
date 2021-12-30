@@ -14,7 +14,10 @@ docker -v
 
 sudo service docker start
 
-sudo docker load -i /tmp/output.current.tar
+cp /tmp/Dockerfile ./Dockerfile
+
+sudo docker build . -t nextjs-runner
+
 sudo docker run -d -p 3000:3000 nextjs-runner
 
 echo "[deploy] done"

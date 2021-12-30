@@ -15,7 +15,7 @@ module "security-group" {
   source = "./modules/security-group"
 
   SECURITY_GROUP_NAME = "web_security"
-  SERVICE_PORT_LIST = [22, 3000]
+  SERVICE_PORT_LIST   = [22, 3000]
 }
 
 
@@ -25,8 +25,14 @@ resource "tls_private_key" "my_key" {
   rsa_bits  = 4096
 }
 resource "aws_key_pair" "generated_key" {
+  key_name   = "myKey" # Create a "myKey" to AWS!!
   public_key = tls_private_key.my_key.public_key_openssh
+
+  provisioner "local-exec" { # Create a "myKey.pem" to your computer!!
+    command = "echo '${tls_private_key.my_key.private_key_pem}' > ./myKey.pem"
+  }
 }
+
 // EC2 Instance
 resource "aws_instance" "web" {
   ami                    = "ami-0eb14fe5735c13eb5"
@@ -44,10 +50,10 @@ resource "aws_instance" "web" {
     private_key = tls_private_key.my_key.private_key_pem
   }
 
-  provisioner "local-exec" {
-    command     = "chmod +x ./predeploy.sh && bash ./predeploy.sh"
-    interpreter = ["/bin/bash", "-c"]
-  }
+  # provisioner "local-exec" {
+  #   command     = "chmod +x ./predeploy.sh && bash ./predeploy.sh"
+  #   interpreter = ["/bin/bash", "-c"]
+  # }
 
   provisioner "file" {
     source      = "deploy.sh"
@@ -55,8 +61,8 @@ resource "aws_instance" "web" {
   }
 
   provisioner "file" {
-    source      = "output.current.tar"
-    destination = "/tmp/output.current.tar"
+    source      = "Dockerfile"
+    destination = "/tmp/Dockerfile"
   }
 
   provisioner "remote-exec" {
@@ -70,9 +76,9 @@ resource "aws_instance" "web" {
 module "route" {
   source = "./modules/route"
 
-  PUBLIC_IP                 = aws_instance.web.public_ip
-  ROUTE_WEB_DOMAIN          = "creco.me"
-  ROUTE_PRIMARY_DOMAIN      = "creco.me"
+  PUBLIC_IP            = aws_instance.web.public_ip
+  ROUTE_WEB_DOMAIN     = "creco.me"
+  ROUTE_PRIMARY_DOMAIN = "creco.me"
 }
 
 # // 도메인 소유 Account 의 key 환경변수
@@ -88,4 +94,9 @@ module "route" {
 output "welcome_to_my_web" {
   value = "http://creco.me:3000"
   # value = "http://${aws_instance.web.public_ip}:3000"
+}
+
+output "tls_private_key-my_key-private_key_pem" {
+  value     = "key is ${tls_private_key.my_key.private_key_pem}"
+  sensitive = true
 }

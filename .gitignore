@@ -171,3 +171,5 @@ terraform.rc
 .envrc
 
 output*
+
+*.pem
