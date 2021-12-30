@@ -24,6 +24,10 @@ variable "DOCKERFILE_PATH" {
   type = string
 }
 
+variable "GIT_TOKEN" {
+  type = string
+}
+
 module "security-group" {
   source              = "../security-group"
   SECURITY_GROUP_NAME = var.SECURITY_GROUP_NAME
@@ -39,7 +43,11 @@ module "ec2-single-instance" {
   source             = "../ec2-single-instance"
   DEPLOY_SCRIPT_PATH = var.DEPLOY_SCRIPT_PATH
   DOCKERFILE_PATH    = var.DOCKERFILE_PATH
-  REMOTE_EXEC        = ["chmod +x /tmp/deploy.sh", "/tmp/deploy.sh"]
+  REMOTE_EXEC = [
+    "export GIT_TOKEN=${var.GIT_TOKEN}",
+    "chmod +x /tmp/deploy.sh",
+    "/tmp/deploy.sh",
+  ]
 
   SECURITY_GROUP_ID = module.security-group.web_security_id
   KEY_NAME          = module.ec2-key-pair.generated_key_key_name
