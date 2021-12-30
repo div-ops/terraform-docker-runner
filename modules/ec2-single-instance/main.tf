@@ -7,10 +7,17 @@ resource "aws_instance" "web" {
   tags = {
     Name = var.TAG_NAME
   }
+}
+
+resource "null_resource" "web" {
+  triggers = {
+    instance_id = aws_instance.web.id
+    version     = var.VERSION
+  }
 
   connection {
     type        = "ssh"
-    host        = self.public_ip
+    host        = aws_instance.web.public_ip
     user        = "ec2-user"
     private_key = var.PRIVATE_KEY
   }
@@ -61,6 +68,11 @@ variable "PRIVATE_KEY" {
 }
 variable "REMOTE_EXEC" {
   type = list(string)
+}
+
+variable "VERSION" {
+  type    = string
+  default = "init"
 }
 
 output "public_ip" {

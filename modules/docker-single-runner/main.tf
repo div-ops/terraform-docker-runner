@@ -29,7 +29,13 @@ variable "GIT_TOKEN" {
 }
 
 variable "TAG_NAME" {
-  type = string
+  type    = string
+  default = "web"
+}
+
+variable "VERSION" {
+  type    = string
+  default = "init"
 }
 
 module "security-group" {
@@ -48,6 +54,7 @@ module "ec2-single-instance" {
   DEPLOY_SCRIPT_PATH = var.DEPLOY_SCRIPT_PATH
   DOCKERFILE_PATH    = var.DOCKERFILE_PATH
   TAG_NAME           = var.TAG_NAME
+  VERSION            = var.VERSION
   REMOTE_EXEC = [
     "export GIT_TOKEN=${var.GIT_TOKEN}",
     "chmod +x /tmp/deploy.sh",
