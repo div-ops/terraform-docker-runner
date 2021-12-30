@@ -82,7 +82,7 @@ variable "region" {
 }
 
 module "docker-single-runner" {
-  source              = "./modules/docker-single-runner"
+  source              = "git::https://github.com/div-ops/terraform-docker-runner.git//modules/docker-single-runner"
   SECURITY_GROUP_NAME = "web_security"
   SERVICE_PORTS       = [22, 80]
   KEY_NAME            = "my-service"
