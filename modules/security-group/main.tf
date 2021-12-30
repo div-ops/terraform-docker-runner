@@ -1,9 +1,7 @@
-// 도메인 소유 Account 의 key 환경변수
 variable "SECURITY_GROUP_NAME" {
   type = string
 }
 
-// security group
 variable "SERVICE_PORT_LIST" {
   type    = list(number)
   default = [22, 3000]
