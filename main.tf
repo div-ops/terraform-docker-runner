@@ -18,19 +18,15 @@ module "security-group" {
   SERVICE_PORT_LIST   = [22, 3000]
 }
 
-
-// EC2 key pair
-resource "tls_private_key" "my_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+variable "KEY_NAME" {
+  type    = string
+  default = "my-service"
 }
-resource "aws_key_pair" "generated_key" {
-  key_name   = "myKey" # Create a "myKey" to AWS!!
-  public_key = tls_private_key.my_key.public_key_openssh
 
-  provisioner "local-exec" { # Create a "myKey.pem" to your computer!!
-    command = "echo '${tls_private_key.my_key.private_key_pem}' > ./myKey.pem"
-  }
+module "ec2-key-pair" {
+  source = "./modules/ec2-key-pair"
+
+  KEY_NAME = var.KEY_NAME
 }
 
 // EC2 Instance
@@ -38,7 +34,7 @@ resource "aws_instance" "web" {
   ami                    = "ami-0eb14fe5735c13eb5"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [module.security-group.web_security_id]
-  key_name               = aws_key_pair.generated_key.key_name
+  key_name               = module.ec2-key-pair.generated_key_key_name
   tags = {
     Name = "terraform-web"
   }
@@ -47,7 +43,7 @@ resource "aws_instance" "web" {
     type        = "ssh"
     host        = self.public_ip
     user        = "ec2-user"
-    private_key = tls_private_key.my_key.private_key_pem
+    private_key = module.ec2-key-pair.tls_private_key_private_key_pem
   }
 
   # provisioner "local-exec" {
@@ -81,22 +77,9 @@ module "route" {
   ROUTE_PRIMARY_DOMAIN = "creco.me"
 }
 
-# // 도메인 소유 Account 의 key 환경변수
-# variable "DNS_AWS_ACCESS_KEY_ID" {
-#   type = string
-# }
-
-# variable "DNS_AWS_SECRET_ACCESS_KEY" {
-#   type = string
-# }
-
 // 접속 경로 output
 output "welcome_to_my_web" {
-  value = "http://creco.me:3000"
-  # value = "http://${aws_instance.web.public_ip}:3000"
+  # value = "http://creco.me:3000"
+  value = "http://${aws_instance.web.public_ip}:3000"
 }
 
-output "tls_private_key-my_key-private_key_pem" {
-  value     = "key is ${tls_private_key.my_key.private_key_pem}"
-  sensitive = true
-}
