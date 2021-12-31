@@ -4,7 +4,7 @@ variable "SECURITY_GROUP_NAME" {
 
 variable "SERVICE_PORT_LIST" {
   type    = list(number)
-  default = [22, 3000]
+  default = [22, 80, 443]
 }
 
 resource "aws_security_group" "web_security" {

@@ -38,6 +38,26 @@ variable "VERSION" {
   default = "init"
 }
 
+resource "aws_default_vpc" "default_vpc" {
+  tags = {
+    Name = "Default VPC"
+  }
+}
+
+resource "aws_default_subnet" "subnet-2a" {
+  availability_zone = "ap-northeast-2a"
+  tags = {
+    Name = "Default subnet for ap-northeast-2a"
+  }
+}
+
+resource "aws_default_subnet" "subnet-2c" {
+  availability_zone = "ap-northeast-2c"
+  tags = {
+    Name = "Default subnet for ap-northeast-2c"
+  }
+}
+
 module "security-group" {
   source              = "../security-group"
   SECURITY_GROUP_NAME = var.SECURITY_GROUP_NAME
@@ -70,14 +90,23 @@ module "route" {
   source               = "../route"
   ROUTE_WEB_DOMAIN     = var.DOMAIN
   ROUTE_PRIMARY_DOMAIN = var.DOMAIN
-
-  PUBLIC_IP = module.ec2-single-instance.public_ip
+  ALIAS_NAME           = module.alb.dns_name
+  ALIAS_ZONE_ID        = module.alb.zone_id
 }
 
 module "certificate" {
   source      = "../aws-certificate-manage"
   ZONE_ID     = module.route.zone_id
   DOMAIN_NAME = var.DOMAIN
+}
+
+module "alb" {
+  source            = "../alb-for-ssl"
+  vpc_id            = aws_default_vpc.default_vpc.id
+  security_group_id = module.security-group.web_security_id
+  subnets           = [aws_default_subnet.subnet-2a.id, aws_default_subnet.subnet-2c.id]
+  certificate_arn   = module.certificate.arn
+  aws_instance_id   = module.ec2-single-instance.aws_instance_id
 }
 
 output "URL" {

@@ -42,3 +42,7 @@ output "acm_certificate_dns_validation_records" {
   description = "record which is used to validate acm certificate"
   value       = aws_acm_certificate.acm.*.domain_validation_options
 }
+
+output "arn" {
+  value = aws_acm_certificate.acm.arn
+}
