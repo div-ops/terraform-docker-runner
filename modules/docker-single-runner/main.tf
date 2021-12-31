@@ -74,6 +74,12 @@ module "route" {
   PUBLIC_IP = module.ec2-single-instance.public_ip
 }
 
+module "certificate" {
+  source      = "../aws-certificate-manage"
+  ZONE_ID     = module.route.zone_id
+  DOMAIN_NAME = var.DOMAIN
+}
+
 output "URL" {
   value = "http://${module.ec2-single-instance.public_ip}"
 }
@@ -84,4 +90,8 @@ output "DOMAIN_URL" {
 
 output "REGISTER_NS" {
   value = module.route.name_servers
+}
+
+output "acm_certificate_dns_validation_records" {
+  value = module.certificate.acm_certificate_dns_validation_records
 }
