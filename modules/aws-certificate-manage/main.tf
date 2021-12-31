@@ -40,5 +40,5 @@ resource "aws_acm_certificate_validation" "acm_validation" {
 
 output "acm_certificate_dns_validation_records" {
   description = "record which is used to validate acm certificate"
-  value       = aws_acm_certificate.sangchulkr.*.domain_validation_options
+  value       = aws_acm_certificate.acm.*.domain_validation_options
 }
