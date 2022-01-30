@@ -94,12 +94,6 @@ module "route" {
   ALIAS_ZONE_ID        = module.alb.zone_id
 }
 
-module "certificate" {
-  source      = "../aws-certificate-manage"
-  ZONE_ID     = module.route.zone_id
-  DOMAIN_NAME = var.DOMAIN
-}
-
 module "alb" {
   source            = "../alb-for-ssl"
   vpc_id            = aws_default_vpc.default_vpc.id
