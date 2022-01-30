@@ -1,26 +1,6 @@
-variable "ROUTE_WEB_DOMAIN" {
-  type = string
-}
-
-variable "ROUTE_PRIMARY_DOMAIN" {
-  type = string
-}
-
-variable "ALIAS_NAME" {
-  type = string
-}
-
-variable "ALIAS_ZONE_ID" {
-  type = string
-}
-
-resource "aws_route53_zone" "primary" {
-  name = var.ROUTE_PRIMARY_DOMAIN
-}
-
 resource "aws_route53_record" "web" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = var.ROUTE_WEB_DOMAIN
+  zone_id = var.route53_zone_id
+  name    = var.domain_name
   type    = "A"
   alias {
     name                   = var.ALIAS_NAME
@@ -29,10 +9,19 @@ resource "aws_route53_record" "web" {
   }
 }
 
-output "name_servers" {
-  value = aws_route53_zone.primary.name_servers
+variable "route53_zone_id" {
+  type = string
 }
 
-output "zone_id" {
-  value = aws_route53_zone.primary.zone_id
+variable "domain_name" {
+  type = string
+}
+
+
+variable "ALIAS_NAME" {
+  type = string
+}
+
+variable "ALIAS_ZONE_ID" {
+  type = string
 }
