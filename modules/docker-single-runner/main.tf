@@ -1,62 +1,3 @@
-variable "SECURITY_GROUP_NAME" {
-  type    = string
-  default = "web_security"
-}
-
-variable "SERVICE_PORTS" {
-  type = list(number)
-}
-
-variable "KEY_NAME" {
-  type    = string
-  default = "my-service"
-}
-
-variable "DOMAIN" {
-  type = string
-}
-
-variable "DEPLOY_SCRIPT_PATH" {
-  type = string
-}
-
-variable "DOCKERFILE_PATH" {
-  type = string
-}
-
-variable "GIT_TOKEN" {
-  type = string
-}
-
-variable "TAG_NAME" {
-  type    = string
-  default = "web"
-}
-
-variable "VERSION" {
-  type    = string
-  default = "init"
-}
-
-resource "aws_default_vpc" "default_vpc" {
-  tags = {
-    Name = "Default VPC"
-  }
-}
-
-resource "aws_default_subnet" "subnet-2a" {
-  availability_zone = "ap-northeast-2a"
-  tags = {
-    Name = "Default subnet for ap-northeast-2a"
-  }
-}
-
-resource "aws_default_subnet" "subnet-2c" {
-  availability_zone = "ap-northeast-2c"
-  tags = {
-    Name = "Default subnet for ap-northeast-2c"
-  }
-}
 
 module "security-group" {
   source              = "../security-group"
@@ -87,18 +28,16 @@ module "ec2-single-instance" {
 }
 
 module "route" {
-  source               = "../route"
-  ROUTE_WEB_DOMAIN     = var.DOMAIN
-  ROUTE_PRIMARY_DOMAIN = var.DOMAIN
-  ALIAS_NAME           = module.alb.dns_name
-  ALIAS_ZONE_ID        = module.alb.zone_id
+  source          = "../route"
+  route53_zone_id = var.hosted_zone_id
+  domain_name     = var.domain_name
+  ALIAS_NAME      = module.alb.dns_name
+  ALIAS_ZONE_ID   = module.alb.zone_id
 }
 
 module "alb" {
   source            = "../alb-for-ssl"
-  vpc_id            = aws_default_vpc.default_vpc.id
   security_group_id = module.security-group.web_security_id
-  subnets           = [aws_default_subnet.subnet-2a.id, aws_default_subnet.subnet-2c.id]
   certificate_arn   = module.certificate.arn
   aws_instance_id   = module.ec2-single-instance.aws_instance_id
 }
@@ -108,7 +47,7 @@ output "URL" {
 }
 
 output "DOMAIN_URL" {
-  value = "http://${var.DOMAIN}"
+  value = "http://${var.domain_name}"
 }
 
 output "REGISTER_NS" {
@@ -117,4 +56,48 @@ output "REGISTER_NS" {
 
 output "acm_certificate_dns_validation_records" {
   value = module.certificate.acm_certificate_dns_validation_records
+}
+
+variable "hosted_zone_id" {
+  type = string
+}
+
+variable "SECURITY_GROUP_NAME" {
+  type    = string
+  default = "web_security"
+}
+
+variable "SERVICE_PORTS" {
+  type = list(number)
+}
+
+variable "KEY_NAME" {
+  type    = string
+  default = "my-service"
+}
+
+variable "domain_name" {
+  type = string
+}
+
+variable "DEPLOY_SCRIPT_PATH" {
+  type = string
+}
+
+variable "DOCKERFILE_PATH" {
+  type = string
+}
+
+variable "GIT_TOKEN" {
+  type = string
+}
+
+variable "TAG_NAME" {
+  type    = string
+  default = "web"
+}
+
+variable "VERSION" {
+  type    = string
+  default = "init"
 }
