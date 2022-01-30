@@ -7,9 +7,9 @@ variable "DOMAIN_NAME" {
 }
 
 resource "aws_acm_certificate" "acm" {
-  domain_name               = var.DOMAIN_NAME
-  subject_alternative_names = ["*.${var.DOMAIN_NAME}"]
-  validation_method         = "DNS"
+  domain_name = var.DOMAIN_NAME
+  # subject_alternative_names = ["*.${var.DOMAIN_NAME}"]
+  validation_method = "DNS"
 }
 
 resource "aws_route53_record" "acm_record" {
