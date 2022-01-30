@@ -1,21 +1,21 @@
-variable "vpc_id" {
-  type = string
+resource "aws_default_vpc" "default_vpc" {
+  tags = {
+    Name = "Default VPC"
+  }
 }
 
-variable "security_group_id" {
-  type = string
+resource "aws_default_subnet" "subnet-2a" {
+  availability_zone = "ap-northeast-2a"
+  tags = {
+    Name = "Default subnet for ap-northeast-2a"
+  }
 }
 
-variable "subnets" {
-  type = list(string)
-}
-
-variable "certificate_arn" {
-  type = string
-}
-
-variable "aws_instance_id" {
-  type = string
+resource "aws_default_subnet" "subnet-2c" {
+  availability_zone = "ap-northeast-2c"
+  tags = {
+    Name = "Default subnet for ap-northeast-2c"
+  }
 }
 
 resource "aws_lb" "alb_for_ssl" {
@@ -23,7 +23,7 @@ resource "aws_lb" "alb_for_ssl" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.security_group_id]
-  subnets            = var.subnets
+  subnets            = [aws_default_subnet.subnet-2a.id, aws_default_subnet.subnet-2c.id]
 
   tags = {
     Type = "alb-for-ssl"
@@ -34,7 +34,7 @@ resource "aws_lb_target_group" "alb_target" {
   name        = "web"
   port        = 80
   protocol    = "HTTP"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_default_vpc.default_vpc.id
   target_type = "instance"
 
   health_check {
@@ -90,3 +90,16 @@ output "dns_name" {
 output "zone_id" {
   value = aws_lb.alb_for_ssl.zone_id
 }
+
+variable "security_group_id" {
+  type = string
+}
+
+variable "certificate_arn" {
+  type = string
+}
+
+variable "aws_instance_id" {
+  type = string
+}
+
