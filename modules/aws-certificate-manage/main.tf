@@ -8,7 +8,7 @@ variable "DOMAIN_NAME" {
 
 resource "aws_acm_certificate" "acm" {
   domain_name               = var.DOMAIN_NAME
-  subject_alternative_names = ["www.${var.DOMAIN_NAME}", "${var.DOMAIN_NAME}", "*.${var.DOMAIN_NAME}"]
+  subject_alternative_names = ["${var.DOMAIN_NAME}", "*.${var.DOMAIN_NAME}"]
   validation_method         = "DNS"
 }
 
