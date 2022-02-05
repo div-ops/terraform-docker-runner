@@ -1,4 +1,3 @@
-
 module "security-group" {
   source              = "../security-group"
   SECURITY_GROUP_NAME = var.security_group_name
