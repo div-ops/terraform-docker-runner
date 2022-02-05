@@ -1,23 +1,23 @@
 
 module "security-group" {
   source              = "../security-group"
-  SECURITY_GROUP_NAME = var.SECURITY_GROUP_NAME
-  SERVICE_PORT_LIST   = var.SERVICE_PORTS
+  SECURITY_GROUP_NAME = var.security_group_name
+  SERVICE_PORT_LIST   = var.service_ports
 }
 
 module "ec2-key-pair" {
   source   = "../ec2-key-pair"
-  KEY_NAME = var.KEY_NAME
+  KEY_NAME = var.key_name
 }
 
 module "ec2-single-instance" {
   source             = "../ec2-single-instance"
-  DEPLOY_SCRIPT_PATH = var.DEPLOY_SCRIPT_PATH
-  DOCKERFILE_PATH    = var.DOCKERFILE_PATH
-  TAG_NAME           = var.TAG_NAME
-  VERSION            = var.VERSION
+  DEPLOY_SCRIPT_PATH = var.deploy_script_path
+  DOCKERFILE_PATH    = var.dockerfile_path
+  TAG_NAME           = var.tag_name
+  VERSION            = var.version
   REMOTE_EXEC = [
-    "export GIT_TOKEN=${var.GIT_TOKEN}",
+    "export GIT_TOKEN=${var.git_token}",
     "chmod +x /tmp/deploy.sh",
     "/tmp/deploy.sh",
   ]
@@ -38,7 +38,7 @@ module "route" {
 module "alb" {
   source            = "../alb-for-ssl"
   security_group_id = module.security-group.web_security_id
-  certificate_arn   = module.certificate.arn
+  certificate_arn   = var.certificate_arn
   aws_instance_id   = module.ec2-single-instance.aws_instance_id
 }
 
@@ -54,24 +54,20 @@ output "REGISTER_NS" {
   value = module.route.name_servers
 }
 
-output "acm_certificate_dns_validation_records" {
-  value = module.certificate.acm_certificate_dns_validation_records
-}
-
 variable "hosted_zone_id" {
   type = string
 }
 
-variable "SECURITY_GROUP_NAME" {
+variable "security_group_name" {
   type    = string
   default = "web_security"
 }
 
-variable "SERVICE_PORTS" {
+variable "service_ports" {
   type = list(number)
 }
 
-variable "KEY_NAME" {
+variable "key_name" {
   type    = string
   default = "my-service"
 }
@@ -80,24 +76,28 @@ variable "domain_name" {
   type = string
 }
 
-variable "DEPLOY_SCRIPT_PATH" {
+variable "deploy_script_path" {
   type = string
 }
 
-variable "DOCKERFILE_PATH" {
+variable "dockerfile_path" {
   type = string
 }
 
-variable "GIT_TOKEN" {
+variable "git_token" {
   type = string
 }
 
-variable "TAG_NAME" {
+variable "tag_name" {
   type    = string
   default = "web"
 }
 
-variable "VERSION" {
+variable "version" {
   type    = string
   default = "init"
+}
+
+variable "certificate_arn" {
+  type = string
 }
