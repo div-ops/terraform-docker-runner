@@ -14,7 +14,7 @@ module "ec2-single-instance" {
   DEPLOY_SCRIPT_PATH = var.deploy_script_path
   DOCKERFILE_PATH    = var.dockerfile_path
   TAG_NAME           = var.tag_name
-  VERSION            = var.version
+  HASH               = var.hash
   REMOTE_EXEC = [
     "export GIT_TOKEN=${var.git_token}",
     "chmod +x /tmp/deploy.sh",
@@ -89,7 +89,7 @@ variable "tag_name" {
   default = "web"
 }
 
-variable "version" {
+variable "hash" {
   type    = string
   default = "init"
 }
