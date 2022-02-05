@@ -43,16 +43,13 @@ module "alb" {
 }
 
 output "URL" {
-  value = "http://${module.ec2-single-instance.public_ip}"
+  value = "https://${module.ec2-single-instance.public_ip}"
 }
 
 output "DOMAIN_URL" {
-  value = "http://${var.domain_name}"
+  value = "https://${var.domain_name}"
 }
 
-output "REGISTER_NS" {
-  value = module.route.name_servers
-}
 
 variable "hosted_zone_id" {
   type = string
