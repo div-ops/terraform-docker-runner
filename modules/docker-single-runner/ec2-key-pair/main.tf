@@ -7,7 +7,7 @@ resource "aws_key_pair" "generated_key" {
   public_key = tls_private_key.ec2_key.public_key_openssh
 
   provisioner "local-exec" {
-    command = "echo '${tls_private_key.ec2_key.private_key_pem}' > ./${var.KEY_NAME}.pem"
+    command = "echo '${tls_private_key.ec2_key.private_key_pem}' > ./${var.key_name}.pem"
   }
 }
 
