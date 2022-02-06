@@ -3,10 +3,18 @@ resource "aws_route53_record" "web" {
   name    = var.domain_name
   type    = "A"
   alias {
-    name                   = var.ALIAS_NAME
-    zone_id                = var.ALIAS_ZONE_ID
+    name                   = var.alias_name
+    zone_id                = var.alias_zone_id
     evaluate_target_health = true
   }
+}
+
+variable "alias_name" {
+  type = string
+}
+
+variable "alias_zone_id" {
+  type = string
 }
 
 variable "route53_zone_id" {
@@ -14,14 +22,5 @@ variable "route53_zone_id" {
 }
 
 variable "domain_name" {
-  type = string
-}
-
-
-variable "ALIAS_NAME" {
-  type = string
-}
-
-variable "ALIAS_ZONE_ID" {
   type = string
 }

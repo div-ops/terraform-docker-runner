@@ -1,76 +1,83 @@
-
 resource "aws_instance" "web" {
-  ami                    = var.AMI
-  instance_type          = var.TYPE
-  vpc_security_group_ids = [var.SECURITY_GROUP_ID]
-  key_name               = var.KEY_NAME
+  ami                    = var.ami
+  instance_type          = var.instance_type
+  vpc_security_group_ids = [var.security_group_id]
+  key_name               = var.key_name
   tags = {
-    Name = var.TAG_NAME
+    Name = var.tag_name
   }
 }
 
 resource "null_resource" "web" {
   triggers = {
     instance_id = aws_instance.web.id
-    version     = var.VERSION
+    hash        = var.hash
   }
 
   connection {
     type        = "ssh"
     host        = aws_instance.web.public_ip
     user        = "ec2-user"
-    private_key = var.PRIVATE_KEY
+    private_key = var.private_key
   }
 
   provisioner "file" {
-    source      = var.DEPLOY_SCRIPT_PATH
+    source      = var.deploy_script_path
     destination = "/tmp/deploy.sh"
   }
 
   provisioner "file" {
-    source      = var.DOCKERFILE_PATH
+    source      = var.dockerfile_path
     destination = "/tmp/Dockerfile"
   }
 
   provisioner "remote-exec" {
-    inline = var.REMOTE_EXEC
+    inline = var.remote_exec
   }
 }
 
-variable "AMI" {
+variable "ami" {
   type    = string
   default = "ami-0eb14fe5735c13eb5"
 }
-variable "TYPE" {
+
+variable "instance_type" {
   type    = string
   default = "t2.micro"
 }
-variable "TAG_NAME" {
+
+variable "tag_name" {
   type    = string
   default = "terraform-web"
 }
-variable "DOCKERFILE_PATH" {
+
+variable "dockerfile_path" {
   type    = string
   default = "Dockerfile"
 }
-variable "DEPLOY_SCRIPT_PATH" {
+
+variable "deploy_script_path" {
   type    = string
   default = "deploy.sh"
 }
-variable "SECURITY_GROUP_ID" {
+
+variable "security_group_id" {
   type = string
 }
-variable "KEY_NAME" {
+
+variable "key_name" {
   type = string
 }
-variable "PRIVATE_KEY" {
+
+variable "private_key" {
   type = string
 }
-variable "REMOTE_EXEC" {
+
+variable "remote_exec" {
   type = list(string)
 }
 
-variable "VERSION" {
+variable "hash" {
   type    = string
   default = "init"
 }

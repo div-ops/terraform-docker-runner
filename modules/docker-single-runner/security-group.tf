@@ -1,17 +1,8 @@
-variable "SECURITY_GROUP_NAME" {
-  type = string
-}
-
-variable "SERVICE_PORT_LIST" {
-  type    = list(number)
-  default = [22, 80, 443]
-}
-
 resource "aws_security_group" "web_security" {
-  name        = var.SECURITY_GROUP_NAME
-  description = var.SECURITY_GROUP_NAME
+  name        = var.security_group_name
+  description = var.security_group_name
   dynamic "ingress" {
-    for_each = var.SERVICE_PORT_LIST
+    for_each = var.service_port_list
     content {
       description      = "Port: ${ingress.value}"
       from_port        = ingress.value
@@ -31,6 +22,16 @@ resource "aws_security_group" "web_security" {
   }
 }
 
+variable "security_group_name" {
+  type = string
+}
+
+variable "service_port_list" {
+  type    = list(number)
+  default = [22, 80, 443]
+}
+
 output "web_security_id" {
   value = aws_security_group.web_security.id
 }
+

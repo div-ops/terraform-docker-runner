@@ -83,14 +83,6 @@ resource "aws_lb_listener" "forward_listener_443" {
   }
 }
 
-output "dns_name" {
-  value = aws_lb.alb_for_ssl.dns_name
-}
-
-output "zone_id" {
-  value = aws_lb.alb_for_ssl.zone_id
-}
-
 variable "security_group_id" {
   type = string
 }
@@ -103,3 +95,10 @@ variable "aws_instance_id" {
   type = string
 }
 
+output "dns_name" {
+  value = aws_lb.alb_for_ssl.dns_name
+}
+
+output "zone_id" {
+  value = aws_lb.alb_for_ssl.zone_id
+}
