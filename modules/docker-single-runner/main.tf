@@ -100,6 +100,22 @@ variable "env_3_key" {
 variable "env_3_value" {
   type = string
 }
+variable "env_4_key" {
+  type    = string
+  default = "env_4"
+}
+
+variable "env_4_value" {
+  type = string
+}
+variable "env_5_key" {
+  type    = string
+  default = "env_5"
+}
+
+variable "env_5_value" {
+  type = string
+}
 
 variable "tag_name" {
   type    = string
