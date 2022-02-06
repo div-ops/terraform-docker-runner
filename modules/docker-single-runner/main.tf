@@ -10,7 +10,7 @@ module "ec2-key-pair" {
 }
 
 module "ec2-single-instance" {
-  source             = "../ec2-single-instance"
+  source             = "./ec2-single-instance"
   deploy_script_path = var.deploy_script_path
   dockerfile_path    = var.dockerfile_path
   tag_name           = var.tag_name
