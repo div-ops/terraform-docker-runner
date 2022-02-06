@@ -15,8 +15,11 @@ module "ec2-single-instance" {
   dockerfile_path    = var.dockerfile_path
   tag_name           = var.tag_name
   hash               = var.hash
+
   remote_exec = [
-    "export GIT_TOKEN=${var.git_token}",
+    "export ${var.env_1_key}=${var.env_1_value}",
+    "export ${var.env_2_key}=${var.env_2_value}",
+    "export ${var.env_3_key}=${var.env_3_value}",
     "chmod +x /tmp/deploy.sh",
     "/tmp/deploy.sh",
   ]
@@ -71,7 +74,30 @@ variable "dockerfile_path" {
   type = string
 }
 
-variable "git_token" {
+variable "env_1_key" {
+  type    = string
+  default = "env_1"
+}
+
+variable "env_1_value" {
+  type = string
+}
+
+variable "env_2_key" {
+  type    = string
+  default = "env_2"
+}
+
+variable "env_2_value" {
+  type = string
+}
+
+variable "env_3_key" {
+  type    = string
+  default = "env_3"
+}
+
+variable "env_3_value" {
   type = string
 }
 
