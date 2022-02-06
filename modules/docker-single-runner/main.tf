@@ -20,6 +20,8 @@ module "ec2-single-instance" {
     "export ${var.env_1_key}=${var.env_1_value}",
     "export ${var.env_2_key}=${var.env_2_value}",
     "export ${var.env_3_key}=${var.env_3_value}",
+    "export ${var.env_4_key}=${var.env_4_value}",
+    "export ${var.env_5_key}=${var.env_5_value}",
     "chmod +x /tmp/deploy.sh",
     "/tmp/deploy.sh",
   ]
