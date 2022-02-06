@@ -1,5 +1,5 @@
 resource "aws_acm_certificate" "acm" {
-  domain_name       = var.DOMAIN_NAME
+  domain_name       = var.domain_name
   validation_method = "DNS"
 
   lifecycle {
@@ -21,7 +21,7 @@ resource "aws_route53_record" "acm_record" {
   records = [each.value.record]
   ttl     = 60
   type    = each.value.type
-  zone_id = var.ZONE_ID
+  zone_id = var.zone_id
 }
 
 resource "aws_acm_certificate_validation" "acm_validation" {
