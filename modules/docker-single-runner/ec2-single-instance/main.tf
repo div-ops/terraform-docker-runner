@@ -37,6 +37,9 @@ resource "null_resource" "web" {
   provisioner "remote-exec" {
     inline = var.remote_exec
   }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 variable "ami" {
