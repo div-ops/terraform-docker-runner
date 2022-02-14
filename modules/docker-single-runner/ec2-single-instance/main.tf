@@ -6,6 +6,9 @@ resource "aws_instance" "web" {
   tags = {
     Name = var.tag_name
   }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "null_resource" "web" {
