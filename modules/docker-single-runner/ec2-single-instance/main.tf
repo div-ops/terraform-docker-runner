@@ -6,9 +6,6 @@ resource "aws_instance" "web" {
   tags = {
     Name = var.tag_name
   }
-  triggers = {
-    hash = var.hash
-  }
   lifecycle {
     create_before_destroy = true
   }
@@ -17,6 +14,7 @@ resource "aws_instance" "web" {
 resource "null_resource" "web" {
   triggers = {
     instance_id = aws_instance.web.id
+    hash        = var.hash
   }
 
   connection {
