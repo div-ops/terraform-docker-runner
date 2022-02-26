@@ -5,7 +5,9 @@ resource "aws_instance" "web" {
   key_name               = var.key_name
   tags = {
     Name = var.tag_name
-    Hash = var.hash
+  }
+  triggers = {
+    hash = var.hash
   }
   lifecycle {
     create_before_destroy = true
