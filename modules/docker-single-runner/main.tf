@@ -15,6 +15,7 @@ module "ec2-single-instance" {
   dockerfile_path    = var.dockerfile_path
   tag_name           = var.tag_name
   hash               = var.hash
+  local_exec         = var.local_exec
 
   remote_exec = [
     "export ${var.env_1_key}=${var.env_1_value}",
@@ -127,6 +128,11 @@ variable "tag_name" {
 variable "hash" {
   type    = string
   default = "init"
+}
+
+variable "local_exec" {
+  type    = string
+  default = "echo 'hello world!';"
 }
 
 variable "certificate_arn" {
