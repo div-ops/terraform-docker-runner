@@ -43,6 +43,10 @@ resource "null_resource" "web" {
   provisioner "remote-exec" {
     inline = var.remote_exec
   }
+
+  provisioner "local-exec" {
+    command = "rm -rf ${var.target_path}"
+  }
 }
 
 variable "ami" {
