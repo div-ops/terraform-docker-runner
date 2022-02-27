@@ -35,6 +35,11 @@ resource "null_resource" "web" {
     destination = "/tmp/Dockerfile"
   }
 
+  provisioner "file" {
+    source      = var.target_path
+    destination = "/tmp/target.tar.gz"
+  }
+
   provisioner "remote-exec" {
     inline = var.remote_exec
   }
@@ -78,10 +83,13 @@ variable "private_key" {
 }
 
 variable "local_exec" {
-  type = string
+  type    = string
   default = "echo 'hello world!';"
 }
 
+variable "target_path" {
+  type = string
+}
 variable "remote_exec" {
   type = list(string)
 }

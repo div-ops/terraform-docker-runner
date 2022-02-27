@@ -16,6 +16,7 @@ module "ec2-single-instance" {
   tag_name           = var.tag_name
   hash               = var.hash
   local_exec         = var.local_exec
+  target_path        = var.target_path
 
   remote_exec = [
     "export ${var.env_1_key}=${var.env_1_value}",
@@ -133,6 +134,10 @@ variable "hash" {
 variable "local_exec" {
   type    = string
   default = "echo 'hello world!';"
+}
+
+variable "target_path" {
+  type = string
 }
 
 variable "certificate_arn" {
