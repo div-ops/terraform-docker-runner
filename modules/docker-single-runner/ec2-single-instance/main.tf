@@ -14,6 +14,10 @@ resource "null_resource" "web" {
     hash        = var.hash
   }
 
+  provisioner "local-exec" {
+    command = var.local_exec
+  }
+
   connection {
     type        = "ssh"
     host        = aws_instance.web.public_ip
@@ -71,6 +75,11 @@ variable "key_name" {
 
 variable "private_key" {
   type = string
+}
+
+variable "local_exec" {
+  type = string
+  default = "echo 'hello world!';"
 }
 
 variable "remote_exec" {
